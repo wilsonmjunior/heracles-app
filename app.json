@@ -1,0 +1,10 @@
+{
+  "expo": {
+    "name": "heracles-app",
+    "slug": "heracles-app",
+    "version": "1.0.0",
+    "assetBundlePatterns": [
+      "**/*"
+    ]
+  }
+}
