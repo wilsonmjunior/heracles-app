@@ -15,7 +15,7 @@ export function SignIn() {
 
   return (
     <ScrollView
-      contentContainerStyle={{ flex: 1, }}
+      contentContainerStyle={{ flexGrow: 1, }}
       showsVerticalScrollIndicator={false}
     >
       <VStack flex={1} bg="gray.700" px={10}>
@@ -35,7 +35,12 @@ export function SignIn() {
         </Center>
 
         <Center>
-          <Heading color="gray.100" mb="6" fontFamily="heading">
+          <Heading
+            color="gray.100"
+            mb="6"
+            fontSize="xl"
+            fontFamily="heading"
+          >
             Acesso a conta
           </Heading>
         </Center>
@@ -48,7 +53,7 @@ export function SignIn() {
               autoCapitalize="none"
             />
             <Input
-              placeholder="Password"
+              placeholder="Senha"
               secureTextEntry
             />
 
