@@ -1,0 +1,74 @@
+import {
+  Center,
+  Heading,
+  Image,
+  ScrollView,
+  Text,
+  VStack
+} from "native-base";
+
+import { BackgroundImg, LogoSvg } from "@assets/index";
+import { Button } from "@components/Button";
+import { Input } from "@components/Input";
+
+export function SignIn() {
+
+  return (
+    <ScrollView
+      contentContainerStyle={{ flex: 1, }}
+      showsVerticalScrollIndicator={false}
+    >
+      <VStack flex={1} bg="gray.700" px={10}>
+        <Image
+          source={BackgroundImg}
+          alt="Pessoas treinando"
+          resizeMode="contain"
+          position="absolute"
+        />
+
+        <Center my={24}>
+          <LogoSvg />
+
+          <Text color="gray.100" fontSize="sm">
+            Treine sua mente e o seu corpo
+          </Text>
+        </Center>
+
+        <Center>
+          <Heading color="gray.100" mb="6" fontFamily="heading">
+            Acesso a conta
+          </Heading>
+        </Center>
+
+        <Center>
+          <VStack w="full" space={4}>
+            <Input
+              placeholder="E-mail"
+              keyboardType="email-address"
+              autoCapitalize="none"
+            />
+            <Input
+              placeholder="Password"
+              secureTextEntry
+            />
+
+            <Button
+              title="Acessar"
+            />
+          </VStack>
+        </Center>
+
+        <Center mt={32}>
+          <Text fontFamily="body" fontSize="sm" color="gray.100">
+            Ainda não tem acesso?
+          </Text>
+          <Button
+            title="Criar conta"
+            mt={4}
+            variant="outline"
+          />
+        </Center>
+      </VStack>
+    </ScrollView>
+  )
+}
