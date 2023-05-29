@@ -25,7 +25,7 @@ export const theme = extendTheme({
       500: '#F75A68'
     },
   },
-  fontSizes: {
+  sizes: {
     14: 56,
     33: 148,
   },
