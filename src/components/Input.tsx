@@ -3,6 +3,7 @@ import { Input as NBInput, IInputProps } from "native-base";
 export function Input({ ...props }: IInputProps) {
   return (
     <NBInput
+      h={14}
       bg="gray.700"
       px={4}
       borderWidth={0}
