@@ -4,6 +4,7 @@ import { NativeBaseProvider } from 'native-base';
 
 import { Loading } from '@components/Loading';
 import { SignIn } from '@screens/SignIn';
+import { SignUp } from '@screens/SignUp';
 
 import { theme } from './styles/theme';
 
@@ -15,7 +16,7 @@ export default function App() {
 
   return (
     <NativeBaseProvider theme={theme}>
-      {!fontsLoaded ? <Loading /> : <SignIn />}
+      {!fontsLoaded ? <Loading /> : <SignUp />}
     </NativeBaseProvider>
   );
 }
