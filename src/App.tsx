@@ -3,10 +3,9 @@ import React from 'react';
 import { NativeBaseProvider } from 'native-base';
 
 import { Loading } from '@components/Loading';
-import { SignIn } from '@screens/SignIn';
-import { SignUp } from '@screens/SignUp';
 
 import { theme } from './styles/theme';
+import { Routes } from './routes';
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -16,7 +15,7 @@ export default function App() {
 
   return (
     <NativeBaseProvider theme={theme}>
-      {!fontsLoaded ? <Loading /> : <SignUp />}
+      {!fontsLoaded ? <Loading /> : <Routes />}
     </NativeBaseProvider>
   );
 }
