@@ -1,9 +1,9 @@
-import { Text, View } from 'react-native'
+import { Text, Center } from 'native-base'
 
 export function Home() {
   return (
-    <View>
-      <Text>Welcome Home</Text>
-    </View>
+    <Center>
+      <Text color="white">Welcome Home</Text>
+    </Center>
   )
 }
