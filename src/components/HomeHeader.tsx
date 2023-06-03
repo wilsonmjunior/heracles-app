@@ -10,7 +10,7 @@ import { MaterialIcons } from "@expo/vector-icons"
 
 import { UserPhoto } from "./UserPhoto"
 
-export default function HomeHeader() {
+export function HomeHeader() {
   return (
     <HStack
       bg="gray.600"
