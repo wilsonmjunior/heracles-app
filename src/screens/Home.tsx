@@ -44,6 +44,7 @@ export function Home() {
         horizontal
         showsHorizontalScrollIndicator={false}
         my={10}
+        minH={10}
         maxH={10}
         _contentContainerStyle={{  px: 8 }}
         ItemSeparatorComponent={() => <Box width={4} />}
