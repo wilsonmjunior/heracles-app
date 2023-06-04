@@ -100,7 +100,12 @@ export function Profile() {
             isDisabled
           />
 
-          <Heading color="gray.100" fontSize="md" mt={35}>
+          <Heading
+            color="gray.100"
+            fontSize="md"
+            fontFamily="heading"
+            mt={35}
+          >
             Alterar senha
           </Heading>
           <Input
