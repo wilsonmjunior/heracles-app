@@ -1,4 +1,4 @@
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native"
 import {
   Center,
   Heading,
@@ -6,16 +6,34 @@ import {
   ScrollView,
   Text,
   VStack
-} from "native-base";
-import { BackgroundImg, LogoSvg } from "@assets/index";
-import { Button } from "@components/Button";
-import { Input } from "@components/Input";
+} from "native-base"
+
+import { BackgroundImg, LogoSvg } from "@assets/index"
+import { Button } from "@components/Button"
+import { Input } from "@components/Input"
+import { useReducerController } from "@hooks/reducer.hook"
+
+type SignUpParams = {
+  name: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+}
+
+const initialState: SignUpParams = {
+  name: '',
+  email: '',
+  password: '',
+  confirmPassword: '',
+};
 
 export function SignUp() {
-  const navigation = useNavigation();
+  const navigation = useNavigation()
+
+  const [state, dispatch] = useReducerController(initialState)
 
   function handleBack() {
-    navigation.goBack();
+    navigation.goBack()
   }
 
   return (

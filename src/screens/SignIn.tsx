@@ -1,4 +1,4 @@
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native"
 import {
   Center,
   Heading,
@@ -6,15 +6,36 @@ import {
   ScrollView,
   Text,
   VStack
-} from "native-base";
+} from "native-base"
 
-import { BackgroundImg, LogoSvg } from "@assets/index";
-import { Button } from "@components/Button";
-import { Input } from "@components/Input";
-import { AuthNavigatorRouteProps } from "@routes/auth.routes";
+import { BackgroundImg, LogoSvg } from "@assets/index"
+import { Button } from "@components/Button"
+import { Input } from "@components/Input"
+import { AuthNavigatorRouteProps } from "@routes/auth.routes"
+import { useReducerController } from "@hooks/reducer.hook"
+
+type State = {
+  name: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+}
+
+const initialState: State = {
+  name: '',
+  email: '',
+  password: '',
+  confirmPassword: '',
+};
 
 export function SignIn() {
-  const navigation = useNavigation<AuthNavigatorRouteProps>();
+  const navigation = useNavigation<AuthNavigatorRouteProps>()
+
+  const [state, dispatch] = useReducerController(initialState)
+
+  const handleChange = (field: keyof State, value: string) => {
+    dispatch({ type: 'UPDATE_FIELD', field, value })
+  };
 
   function handleNewAccount() {
     navigation.navigate('signUp');
@@ -59,10 +80,12 @@ export function SignIn() {
               placeholder="E-mail"
               keyboardType="email-address"
               autoCapitalize="none"
+              onChangeText={(value) => handleChange('email', value)}
             />
             <Input
               placeholder="Senha"
               secureTextEntry
+              onChangeText={(value) => handleChange('password', value)}
             />
 
             <Button
