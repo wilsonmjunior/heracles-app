@@ -7,11 +7,11 @@ import {
   Text,
   VStack
 } from "native-base"
+import { useForm } from "react-hook-form";
 
 import { BackgroundImg, LogoSvg } from "@assets/index"
 import { Button } from "@components/Button"
 import { Input } from "@components/Input"
-import { useReducerController } from "@hooks/reducer.hook"
 
 type SignUpParams = {
   name: string;
@@ -20,17 +20,8 @@ type SignUpParams = {
   confirmPassword: string;
 }
 
-const initialState: SignUpParams = {
-  name: '',
-  email: '',
-  password: '',
-  confirmPassword: '',
-};
-
 export function SignUp() {
   const navigation = useNavigation()
-
-  const [state, dispatch] = useReducerController(initialState)
 
   function handleBack() {
     navigation.goBack()
