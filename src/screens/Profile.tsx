@@ -1,27 +1,26 @@
+import { useState } from 'react'
 import {
-  Alert,
   Center,
   Heading,
   ScrollView,
   Skeleton,
   Text,
   VStack,
-  useToast
 } from 'native-base'
 import { TouchableOpacity } from 'react-native'
 import * as ImagePicker from "expo-image-picker"
 import * as FileSystem from "expo-file-system"
 
-import { UserPhoto } from '@components/UserPhoto'
-import { ScreenHeader } from '@components/ScreenHeader'
-import { useState } from 'react'
-import { Input } from '@components/Input'
 import { Button } from '@components/Button'
+import { Input } from '@components/Input'
+import { ScreenHeader } from '@components/ScreenHeader'
+import { UserPhoto } from '@components/UserPhoto'
+import { useMessage } from '@hooks/message.hook'
 
 const IMAGE_SIZE = 33
 
 export function Profile() {
-  const toast = useToast()
+  const { errorMessage } = useMessage()
 
   const [photoIsLoaded, setPhotoIsLoaded] = useState(true)
   const [userPhoto, setUserPhoto] = useState("https://github.com/wilsonmjunior.png")
@@ -44,17 +43,16 @@ export function Profile() {
       if (photoSelected.assets[0].uri) {
         const photoInfo = await FileSystem.getInfoAsync(photoSelected.assets[0].uri)
         if (photoInfo.exists && (photoInfo.size / 1024 / 1024) > 2) {
-          return toast.show({
-            title: "Essa imagem é muito grande. Escolha uma de até 2MB",
-            bg: "red.500",
-            color: "gray.100",
-            placement: "top"
+          return errorMessage({ 
+            title: "Essa imagem é muito grande. Escolha uma de até 2MB" 
           })
         }
         setUserPhoto(photoSelected.assets[0].uri)
       }
     } catch (error) {
-      console.log(error)
+      errorMessage({
+        title: "Erro ao carregar a imagem.",
+      })
     } finally {
       setPhotoIsLoaded(true)
     }
