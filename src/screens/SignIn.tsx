@@ -12,28 +12,24 @@ import { BackgroundImg, LogoSvg } from "@assets/index"
 import { Button } from "@components/Button"
 import { Input } from "@components/Input"
 import { AuthNavigatorRouteProps } from "@routes/auth.routes"
-import { useReducerController } from "@hooks/reducer.hook"
+import { FieldState, useReducerController } from "@hooks/reducer.hook"
 
-type State = {
-  name: string;
-  email: string;
-  password: string;
-  confirmPassword: string;
+type SignInState = {
+  email: FieldState;
+  password: FieldState;
 }
 
-const initialState: State = {
-  name: '',
-  email: '',
-  password: '',
-  confirmPassword: '',
-};
+const initialState: SignInState = {
+  email: { error: '', value: '' },
+  password: { error: '', value: '' },
+}
 
 export function SignIn() {
   const navigation = useNavigation<AuthNavigatorRouteProps>()
 
   const [state, dispatch] = useReducerController(initialState)
 
-  const handleChange = (field: keyof State, value: string) => {
+  const handleChangeText = (field: keyof SignInState, value: string) => {
     dispatch({ type: 'UPDATE_FIELD', field, value })
   };
 
@@ -80,12 +76,12 @@ export function SignIn() {
               placeholder="E-mail"
               keyboardType="email-address"
               autoCapitalize="none"
-              onChangeText={(value) => handleChange('email', value)}
+              onChangeText={(value) => handleChangeText('email', value)}
             />
             <Input
               placeholder="Senha"
               secureTextEntry
-              onChangeText={(value) => handleChange('password', value)}
+              onChangeText={(value) => handleChangeText('password', value)}
             />
 
             <Button
