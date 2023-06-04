@@ -1,24 +1,62 @@
+import { useState } from 'react'
 import {
-  Box,
   Center,
   Heading,
   ScrollView,
   Skeleton,
   Text,
-  VStack
+  VStack,
 } from 'native-base'
 import { TouchableOpacity } from 'react-native'
+import * as ImagePicker from "expo-image-picker"
+import * as FileSystem from "expo-file-system"
 
-import { UserPhoto } from '@components/UserPhoto'
-import { ScreenHeader } from '@components/ScreenHeader'
-import { useState } from 'react'
-import { Input } from '@components/Input'
 import { Button } from '@components/Button'
+import { Input } from '@components/Input'
+import { ScreenHeader } from '@components/ScreenHeader'
+import { UserPhoto } from '@components/UserPhoto'
+import { useMessage } from '@hooks/message.hook'
 
-const IMAGE_SIZE = 33;
+const IMAGE_SIZE = 33
 
 export function Profile() {
-  const [photoIsLoaded, setPhotoIsLoaded] = useState(true);
+  const { errorMessage } = useMessage()
+
+  const [photoIsLoaded, setPhotoIsLoaded] = useState(true)
+  const [userPhoto, setUserPhoto] = useState("https://github.com/wilsonmjunior.png")
+
+  async function handleChangeUserPhoto() {
+    try {
+      setPhotoIsLoaded(false)
+
+      const photoSelected = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        quality: 1,
+        aspect: [4, 4],
+        allowsEditing: true,
+      })
+  
+      if (photoSelected.canceled) {
+        return
+      }
+
+      if (photoSelected.assets[0].uri) {
+        const photoInfo = await FileSystem.getInfoAsync(photoSelected.assets[0].uri)
+        if (photoInfo.exists && (photoInfo.size / 1024 / 1024) > 2) {
+          return errorMessage({ 
+            title: "Essa imagem é muito grande. Escolha uma de até 2MB" 
+          })
+        }
+        setUserPhoto(photoSelected.assets[0].uri)
+      }
+    } catch (error) {
+      errorMessage({
+        title: "Erro ao carregar a imagem.",
+      })
+    } finally {
+      setPhotoIsLoaded(true)
+    }
+  }
 
   return (
     <VStack flex={1}>
@@ -40,13 +78,13 @@ export function Profile() {
           >
             <UserPhoto 
               size={IMAGE_SIZE} 
-              source={{ uri: "https://github.com/wilsonmjunior.png" }} 
+              source={{ uri: userPhoto }} 
               alt="Foto do usuário"
               mb={3}
             />
           </Skeleton>
 
-          <TouchableOpacity>
+          <TouchableOpacity onPress={handleChangeUserPhoto}>
             <Text color="green.500" fontWeight="bold" fontSize="md"> 
               Alterar foto
             </Text>
