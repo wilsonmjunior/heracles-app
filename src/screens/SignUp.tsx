@@ -1,94 +1,153 @@
-import { useNavigation } from "@react-navigation/native"
+import {useNavigation} from "@react-navigation/native";
 import {
-  Center,
-  Heading,
-  Image,
-  ScrollView,
-  Text,
-  VStack
-} from "native-base"
-import { useForm } from "react-hook-form";
+	Center,
+	Heading,
+	Image,
+	ScrollView,
+	Text,
+	VStack,
+} from "native-base";
+import {Controller, useForm} from "react-hook-form";
+import * as yup from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
 
-import { BackgroundImg, LogoSvg } from "@assets/index"
-import { Button } from "@components/Button"
-import { Input } from "@components/Input"
+import {BackgroundImg, LogoSvg} from "@assets/index";
+import {Button} from "@components/Button";
+import {Input} from "@components/Input";
 
-type SignUpParams = {
-  name: string;
-  email: string;
-  password: string;
-  confirmPassword: string;
-}
+type SignUpFormData = {
+	name: string;
+	email: string;
+	password: string;
+	confirmPassword: string;
+};
+
+const signUpSchema = yup.object({
+	name: yup.string().required("Informe seu nome."), 
+	email: yup.string().required("Informe seu e-mail.").email("E-mail inválido"), 
+	password: yup.string().required("Informe a senha.").min(6, "A senha deve conter no mínimo 6 caracteres."), 
+	confirmPassword: yup.string().required("Confirme a senha.").oneOf([yup.ref('password')], "As senhas não conferem.")
+})
 
 export function SignUp() {
-  const navigation = useNavigation()
+	const navigation = useNavigation();
+	const {control, formState: { errors }, handleSubmit} = useForm<SignUpFormData>({
+		resolver: yupResolver(signUpSchema),
+	});
 
-  function handleBack() {
-    navigation.goBack()
-  }
+	function handleBack() {
+		navigation.goBack();
+	}
 
-  return (
-    <ScrollView
-      contentContainerStyle={{ flexGrow: 1, }}
-      showsVerticalScrollIndicator={false}
-    >
-      <VStack flex={1} px={10}>
-        <Image
-          source={BackgroundImg}
-          defaultSource={BackgroundImg}
-          alt="Pessoas treinando"
-          resizeMode="contain"
-          position="absolute"
-        />
+	function handleSignUp(values: SignUpFormData) {
+		console.log("values", values)
+	}
 
-        <Center my={24}>
-          <LogoSvg />
+	return (
+		<ScrollView
+			contentContainerStyle={{flexGrow: 1}}
+			showsVerticalScrollIndicator={false}
+		>
+			<VStack flex={1} px={10}>
+				<Image
+					source={BackgroundImg}
+					defaultSource={BackgroundImg}
+					alt="Pessoas treinando"
+					resizeMode="contain"
+					position="absolute"
+				/>
 
-          <Text color="gray.100" fontSize="sm">
+				<Center my={24}>
+					<LogoSvg />
+
+					<Text color="gray.100" fontSize="sm">
             Treine sua mente e o seu corpo
-          </Text>
-        </Center>
+					</Text>
+				</Center>
 
-        <Center>
-          <Heading
-            color="gray.100"
-            mb="6"
-            fontSize="xl"
-            fontFamily="heading">
+				<Center>
+					<Heading
+						color="gray.100"
+						mb="6"
+						fontSize="xl"
+						fontFamily="heading">
             Crie a sua conta
-          </Heading>
-        </Center>
+					</Heading>
+				</Center>
 
-        <Center>
-          <VStack w="full" space={4}>
-            <Input
-              placeholder="Nome"
-            />
+				<Center>
+					<VStack w="full" space={4}>
+						<Controller
+							name="name"
+							control={control}
+							render={({field: {value, onChange}}) => (
+								<Input
+									placeholder="Nome"
+									value={value}
+									onChangeText={onChange}
+									error={errors.name?.message}
+								/>
+							)}
+						/>
 
-            <Input
-              placeholder="E-mail"
-              keyboardType="email-address"
-              autoCapitalize="none"
-            />
+						<Controller
+							name="email"
+							control={control}
+							render={({field: {value, onChange}}) => (
+								<Input
+									placeholder="E-mail"
+									value={value}
+									keyboardType="email-address"
+									error={errors.email?.message}
+									onChangeText={onChange}
+								/>
+							)}
+						/>
 
-            <Input
-              placeholder="Senha"
-              secureTextEntry
-            />
+						<Controller
+							name="password"
+							control={control}
+							render={({field: {value, onChange}}) => (
+								<Input
+									placeholder="Senha"
+									value={value}
+									secureTextEntry
+									error={errors.password?.message}
+									onChangeText={onChange}
+								/>
+							)}
+						/>
 
-            <Button
-              title="Acessar"
-            />
-          </VStack>
-        </Center>
+						<Controller
+							name="confirmPassword"
+							control={control}
+							render={({field: {value, onChange}}) => (
+								<Input
+									placeholder="Confirmar a senha"
+									value={value}
+									secureTextEntry
+									onChangeText={onChange}
+									error={errors.confirmPassword?.message}
+									onSubmitEditing={handleSubmit(handleSignUp)}
+									returnKeyType="send"
+								/>
+							)}
+						/>
 
-        <Button
-          title="Voltar para o login"
-          variant="outline"
-          mt={24}
-          onPress={handleBack}
-        />
-      </VStack>
-    </ScrollView>
-  )
+						<Button
+							title="Criar e acessar"
+							onPress={handleSubmit(handleSignUp)}
+						/>
+					</VStack>
+				</Center>
+
+				<Button
+					title="Voltar para o login"
+					variant="outline"
+					mt={24}
+					onPress={handleBack}
+				/>
+			</VStack>
+		</ScrollView>
+	);
 }
