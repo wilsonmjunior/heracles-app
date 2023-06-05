@@ -27,7 +27,7 @@ export function ExerciseCard({ name, ...othersProps }: ExerciseCardProps) {
         /> 
 
         <VStack flex={1}>
-          <Heading color="white" fontSize="lg">{name}</Heading>
+          <Heading color="white" fontSize="lg" fontFamily="heading">{name}</Heading>
           <Text color="gray.200" fontSize="sm" mt={1} numberOfLines={2}>
             3 séries x 12 repetições
           </Text>
