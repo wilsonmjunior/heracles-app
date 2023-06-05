@@ -14,6 +14,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import {BackgroundImg, LogoSvg} from "@assets/index";
 import {Button} from "@components/Button";
 import {Input} from "@components/Input";
+import { useMessage } from "@hooks/message.hook";
 
 type SignUpFormData = {
 	name: string;
@@ -35,12 +36,27 @@ export function SignUp() {
 		resolver: yupResolver(signUpSchema),
 	});
 
+	const { errorMessage } = useMessage()
+
 	function handleBack() {
 		navigation.goBack();
 	}
 
 	function handleSignUp(values: SignUpFormData) {
-		console.log("values", values)
+		try {
+			const { name, email, password } = values
+			
+			fetch('http://192.168.0.108:3333/users', {
+				method: 'POST',
+				headers: {
+					'Accept': 'application/json',
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({ name, email, password })
+			})
+		} catch (error) {
+			errorMessage({ title: 'Error ao enviar dados.' })
+		}
 	}
 
 	return (
