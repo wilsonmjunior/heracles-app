@@ -1,4 +1,4 @@
-import { useNavigation } from "@react-navigation/native"
+import { useNavigation } from "@react-navigation/native";
 import {
   Center,
   Heading,
@@ -6,12 +6,13 @@ import {
   ScrollView,
   Text,
   VStack
-} from "native-base"
+} from "native-base";
 
-import { BackgroundImg, LogoSvg } from "@assets/index"
-import { Button } from "@components/Button"
-import { Input } from "@components/Input"
-import { AuthNavigatorRouteProps } from "@routes/auth.routes"
+import { BackgroundImg, LogoSvg } from "@assets/index";
+import { Button } from "@components/Button";
+import { Input } from "@components/Input";
+import { AuthNavigatorRouteProps } from "@routes/auth.routes";
+import { useAuth } from "@hooks/auth.hook";
 
 type SignInParams = {
   email: string;
@@ -19,12 +20,15 @@ type SignInParams = {
 }
 
 export function SignIn() {
-  const navigation = useNavigation<AuthNavigatorRouteProps>()
+  const navigation = useNavigation<AuthNavigatorRouteProps>();
+
+  const { user } = useAuth();
 
   function handleNewAccount() {
     navigation.navigate('signUp');
   }
 
+  console.log('nav:: ', user)
   return (
     <ScrollView
       contentContainerStyle={{ flexGrow: 1, }}
