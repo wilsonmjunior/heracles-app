@@ -1,4 +1,4 @@
-import { useNavigation } from "@react-navigation/native"
+import { useNavigation } from "@react-navigation/native";
 import {
   Center,
   Heading,
@@ -6,23 +6,33 @@ import {
   ScrollView,
   Text,
   VStack
-} from "native-base"
+} from "native-base";
+import { Controller, useForm } from "react-hook-form";
 
-import { BackgroundImg, LogoSvg } from "@assets/index"
-import { Button } from "@components/Button"
-import { Input } from "@components/Input"
-import { AuthNavigatorRouteProps } from "@routes/auth.routes"
+import { BackgroundImg, LogoSvg } from "@assets/index";
+import { Button } from "@components/Button";
+import { Input } from "@components/Input";
+import { useAuth } from "@hooks/auth.hook";
+import { AuthNavigatorRouteProps } from "@routes/auth.routes";
 
-type SignInParams = {
+type SignInFormData = {
   email: string;
   password: string;
 }
 
 export function SignIn() {
-  const navigation = useNavigation<AuthNavigatorRouteProps>()
+  const navigation = useNavigation<AuthNavigatorRouteProps>();
+
+  const { control, formState: { errors }, handleSubmit } = useForm<SignInFormData>();
+
+  const { user } = useAuth();
 
   function handleNewAccount() {
     navigation.navigate('signUp');
+  }
+
+  function handleSignIn() {
+
   }
 
   return (
@@ -60,18 +70,36 @@ export function SignIn() {
 
         <Center>
           <VStack w="full" space={4}>
-            <Input
-              placeholder="E-mail"
-              keyboardType="email-address"
-              autoCapitalize="none"
+            <Controller
+              name="email"
+              control={control} 
+              rules={{ required: "Informe o seu e-mail." }}
+              render={() => (
+                <Input
+                  placeholder="E-mail"
+                  keyboardType="email-address"
+                  autoCapitalize="none"
+                  error={errors.email && errors.email.message}
+                />
+              )}
             />
-            <Input
-              placeholder="Senha"
-              secureTextEntry
+           
+            <Controller 
+              name="password"
+              control={control}
+              rules={{ required: "Informe a senha." }}
+              render={() => (
+                <Input
+                  placeholder="Senha"
+                  secureTextEntry
+                  error={errors.password && errors.password.message}
+                />
+              )}
             />
 
             <Button
               title="Acessar"
+              onPress={handleSubmit(handleSignIn)}
             />
           </VStack>
         </Center>

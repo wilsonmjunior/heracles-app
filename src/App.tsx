@@ -3,6 +3,7 @@ import React from 'react';
 import { NativeBaseProvider, StatusBar } from 'native-base';
 
 import { Loading } from '@components/Loading';
+import { AuthProvider } from '@contexts/AuthContext';
 
 import { theme } from './styles/theme';
 import { Routes } from './routes';
@@ -20,7 +21,11 @@ export default function App() {
         backgroundColor="transparent"
         translucent
       />
-      {!fontsLoaded ? <Loading /> : <Routes />}
+      {!fontsLoaded ? <Loading /> : (
+        <AuthProvider>
+          <Routes />
+        </AuthProvider>
+      )}
     </NativeBaseProvider>
   );
 }
