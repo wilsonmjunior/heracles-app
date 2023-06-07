@@ -20,7 +20,7 @@ import { useMessage } from '@hooks/message.hook'
 const IMAGE_SIZE = 33
 
 export function Profile() {
-  const { errorMessage } = useMessage()
+  const { showErrorMessage } = useMessage()
 
   const [photoIsLoaded, setPhotoIsLoaded] = useState(true)
   const [userPhoto, setUserPhoto] = useState("https://github.com/wilsonmjunior.png")
@@ -43,14 +43,14 @@ export function Profile() {
       if (photoSelected.assets[0].uri) {
         const photoInfo = await FileSystem.getInfoAsync(photoSelected.assets[0].uri)
         if (photoInfo.exists && (photoInfo.size / 1024 / 1024) > 2) {
-          return errorMessage({ 
+          return showErrorMessage({ 
             title: "Essa imagem é muito grande. Escolha uma de até 2MB" 
           })
         }
         setUserPhoto(photoSelected.assets[0].uri)
       }
     } catch (error) {
-      errorMessage({
+      showErrorMessage({
         title: "Erro ao carregar a imagem.",
       })
     } finally {
