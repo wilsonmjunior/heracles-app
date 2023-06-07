@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import {
   Center,
@@ -13,7 +14,9 @@ import { BackgroundImg, LogoSvg } from "@assets/index";
 import { Button } from "@components/Button";
 import { Input } from "@components/Input";
 import { useAuth } from "@hooks/auth.hook";
+import { useMessage } from "@hooks/message.hook";
 import { AuthNavigatorRouteProps } from "@routes/auth.routes";
+import { AppError } from "@utils/AppError";
 
 type SignInFormData = {
   email: string;
@@ -23,16 +26,33 @@ type SignInFormData = {
 export function SignIn() {
   const navigation = useNavigation<AuthNavigatorRouteProps>();
 
-  const { control, formState: { errors }, handleSubmit } = useForm<SignInFormData>();
+  const { 
+    control, 
+    formState: { errors },
+    handleSubmit
+  } = useForm<SignInFormData>();
 
-  const { user } = useAuth();
+  const [isLoading, setIsLoading] = useState(false);
+
+  const { signIn } = useAuth();
+  const { showErrorMessage } = useMessage();
 
   function handleNewAccount() {
     navigation.navigate('signUp');
   }
 
-  function handleSignIn() {
+  async function handleSignIn({ email, password }: SignInFormData) {
+    try {
+      setIsLoading(true);
+      await signIn(email, password);
 
+    } catch (error) {
+      const isAppError = error instanceof AppError;
+      const title = isAppError ? error.message : "Não foi possível logar. Tente novamente mais tarde.";
+
+      showErrorMessage({ title });
+      setIsLoading(true);
+    } 
   }
 
   return (
@@ -74,12 +94,15 @@ export function SignIn() {
               name="email"
               control={control} 
               rules={{ required: "Informe o seu e-mail." }}
-              render={() => (
+              render={({ field: { value, onChange } }) => (
                 <Input
                   placeholder="E-mail"
+                  value={value}
+                  error={errors.email && errors.email.message}
                   keyboardType="email-address"
                   autoCapitalize="none"
-                  error={errors.email && errors.email.message}
+                  autoComplete="email"
+                  onChangeText={onChange}
                 />
               )}
             />
@@ -88,17 +111,21 @@ export function SignIn() {
               name="password"
               control={control}
               rules={{ required: "Informe a senha." }}
-              render={() => (
+              render={({ field: { value, onChange } }) => (
                 <Input
                   placeholder="Senha"
+                  value={value}
                   secureTextEntry
                   error={errors.password && errors.password.message}
+                  autoComplete="password"
+                  onChangeText={onChange}
                 />
               )}
             />
 
             <Button
               title="Acessar"
+              isLoading={isLoading}
               onPress={handleSubmit(handleSignIn)}
             />
           </VStack>

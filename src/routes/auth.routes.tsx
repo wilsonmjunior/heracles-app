@@ -12,7 +12,7 @@ export type AuthNavigatorRouteProps = NativeStackNavigationProp<AuthRoutesType>
 
 const { Navigator, Screen } = createNativeStackNavigator<AuthRoutesType>()
 
-export function AuthRoutes() {
+export function AuthRoutes() {  
   return (
     <Navigator
       screenOptions={{

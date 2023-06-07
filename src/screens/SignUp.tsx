@@ -38,7 +38,7 @@ export function SignUp() {
 		resolver: yupResolver(signUpSchema),
 	});
 
-	const { errorMessage } = useMessage()
+	const { showErrorMessage } = useMessage()
 
 	function handleBack() {
 		navigation.goBack();
@@ -52,7 +52,7 @@ export function SignUp() {
 			const isAppError = error instanceof AppError;
 			const title = isAppError ? error.message : "Não foi possível cria a conta. Tente novamente mais tarde.";
 			
-			errorMessage({ title })
+			showErrorMessage({ title })
 		}
 	}
 

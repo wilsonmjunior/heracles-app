@@ -7,7 +7,7 @@ type Message = {
 export const useMessage = () => {
   const toast = useToast()
 
-  function errorMessage({ title }: Message){
+  function showErrorMessage({ title }: Message){
     return toast.show({
       bg: "red.500",
       color: "gray.100",
@@ -16,7 +16,17 @@ export const useMessage = () => {
     })
   }
 
+  function showSuccessMessage({ title }: Message){
+    return toast.show({
+      bg: "green.500",
+      color: "gray.100",
+      placement: "top",
+      title,
+    })
+  }
+
   return {
-    errorMessage,
+    showErrorMessage,
+    showSuccessMessage,
   }
 }
