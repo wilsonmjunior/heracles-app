@@ -22,3 +22,11 @@ export async function getUserFromStorage() {
     throw error;
   }
 }
+
+export async function removeUserFromStorage() { 
+  try {
+    await AsyncStorage.removeItem(USER_STORAGE);
+  } catch (error) {
+    throw error;
+  }
+}
