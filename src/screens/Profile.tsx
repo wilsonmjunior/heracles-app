@@ -16,6 +16,7 @@ import { Input } from '@components/Input'
 import { ScreenHeader } from '@components/ScreenHeader'
 import { UserPhoto } from '@components/UserPhoto'
 import { useMessage } from '@hooks/message.hook'
+import { UserPhotoDefaultImg } from '@assets/index'
 
 const IMAGE_SIZE = 33
 
@@ -23,7 +24,7 @@ export function Profile() {
   const { showErrorMessage } = useMessage()
 
   const [photoIsLoaded, setPhotoIsLoaded] = useState(true)
-  const [userPhoto, setUserPhoto] = useState("https://github.com/wilsonmjunior.png")
+  const [userPhoto, setUserPhoto] = useState("")
 
   async function handleChangeUserPhoto() {
     try {
@@ -78,7 +79,7 @@ export function Profile() {
           >
             <UserPhoto 
               size={IMAGE_SIZE} 
-              source={{ uri: userPhoto }} 
+              source={userPhoto !== "" ? { uri: userPhoto } : UserPhotoDefaultImg} 
               alt="Foto do usuário"
               mb={3}
             />
