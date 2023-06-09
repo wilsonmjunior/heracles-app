@@ -27,8 +27,8 @@ export function AuthProvider({ children  }:AuthProviderProps) {
     try {
       const response = await api.post('sessions', { email, password });
       if (response.data) {
-        saveUserToStorage(response.data)
-        setUser(response.data);
+        saveUserToStorage(response.data.user)
+        setUser(response.data.user);
       }
     } catch (error) {
       throw error;
