@@ -1,16 +1,20 @@
-import { TouchableOpacity } from "react-native"
+import { TouchableOpacity } from "react-native";
 import {
   HStack,
   Heading,
   Icon,
   Text,
   VStack,
-} from "native-base"
-import { MaterialIcons } from "@expo/vector-icons"
+} from "native-base";
+import { MaterialIcons } from "@expo/vector-icons";
 
-import { UserPhoto } from "./UserPhoto"
+import { UserPhoto } from "./UserPhoto";
+import { useAuth } from "@hooks/auth.hook";
+import { UserPhotoDefaultImg } from "@assets/index";
 
 export function HomeHeader() {
+  const { user } = useAuth();
+
   return (
     <HStack
       bg="gray.600"
@@ -22,13 +26,15 @@ export function HomeHeader() {
     >
       <UserPhoto 
         size={16} 
-        source={{ uri: "https://github.com/wilsonmjunior.png" }} 
+        source={user.avatar ? { uri: user.avatar } : UserPhotoDefaultImg} 
         alt="Imagem do usuário"
       />
 
       <VStack flex={1}>
         <Text color="gray.100" fontSize="md">Olá,</Text> 
-        <Heading color="gray.100" fontSize="md" fontFamily="heading">Wilson</Heading>
+        <Heading color="gray.100" fontSize="md" fontFamily="heading">
+          {user.name}
+        </Heading>
       </VStack>
 
       <TouchableOpacity>
