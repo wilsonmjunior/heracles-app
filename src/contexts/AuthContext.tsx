@@ -3,12 +3,13 @@ import { ReactNode, createContext, useCallback, useEffect, useState } from "reac
 import { UserDTO } from "@dtos/UserDTO";
 import { useMessage } from "@hooks/message.hook";
 import { api } from "@services/api";
-import { getUserFromStorage, saveUserToStorage } from "@storage/storageUser";
+import { getUserFromStorage, removeUserFromStorage, saveUserToStorage } from "@storage/storageUser";
 
 type AuthContextDataProps = {
   user: UserDTO;
   isLoadingUserFromStorage: boolean;
   signIn(email: string, password: string): Promise<void>
+  signOut(): void;
 }
 
 type AuthProviderProps = { 
@@ -32,6 +33,19 @@ export function AuthProvider({ children  }:AuthProviderProps) {
       }
     } catch (error) {
       throw error;
+    }
+  }, []);
+
+  const signOut = useCallback(async () => {
+    try {
+      setIsLoadingUserFromStorage(true);
+
+      setUser({} as UserDTO);
+      await removeUserFromStorage();
+    } catch (error) {
+      showErrorMessage({ title: "Erro a sair do aplicativo." })
+    } finally {
+      setIsLoadingUserFromStorage(false);
     }
   }, []);
 
@@ -60,6 +74,7 @@ export function AuthProvider({ children  }:AuthProviderProps) {
         user,
         isLoadingUserFromStorage,
         signIn,
+        signOut,
       }}
     >
       {children}
