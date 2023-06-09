@@ -17,6 +17,8 @@ import {Input} from "@components/Input";
 import { useMessage } from "@hooks/message.hook";
 import { api } from "@services/api";
 import { AppError } from "@utils/AppError";
+import { useState } from "react";
+import { useAuth } from "@hooks/auth.hook";
 
 type SignUpFormData = {
 	name: string;
@@ -38,6 +40,9 @@ export function SignUp() {
 		resolver: yupResolver(signUpSchema),
 	});
 
+	const [isLoading, setIsLoading] = useState(false);
+
+	const { signIn } = useAuth();
 	const { showErrorMessage } = useMessage()
 
 	function handleBack() {
@@ -46,13 +51,19 @@ export function SignUp() {
 
 	async function handleSignUp(values: SignUpFormData) {
 		try {
-			const { email, name, password } = values
-			await api.post("users", { email, name, password })
+			setIsLoading(true);
+
+			const { email, name, password } = values;
+
+			await api.post("users", { email, name, password });
+
+			await signIn(email, password);
 		} catch (error) {
+			setIsLoading(false);
 			const isAppError = error instanceof AppError;
 			const title = isAppError ? error.message : "Não foi possível cria a conta. Tente novamente mais tarde.";
 			
-			showErrorMessage({ title })
+			showErrorMessage({ title });
 		}
 	}
 
@@ -151,6 +162,7 @@ export function SignUp() {
 						<Button
 							title="Criar e acessar"
 							onPress={handleSubmit(handleSignUp)}
+							isLoading={isLoading}
 						/>
 					</VStack>
 				</Center>
