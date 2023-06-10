@@ -25,24 +25,42 @@ import { useMessage } from '@hooks/message.hook';
 import { AppError } from '@utils/AppError';
 import { api } from '@services/api';
 import { ExerciseDTO } from '@dtos/ExerciseDTO';
-import { Loading } from '@components/Loading';
 
 type RouteParams = RouteProp<ParamListBase> & {
   params: {
-    id: string;
+    exerciseId: string;
   }
 }
 
 export function Exercise() {
   const { goBack } = useNavigation();
-  const { params } = useRoute<RouteParams>();
+  const { params: { exerciseId } } = useRoute<RouteParams>();
 
   const [exercise, setExercise] = useState({} as ExerciseDTO);
+  const [completedExercise, setCompletedExercise] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const { showErrorMessage } = useMessage();
+  const { showErrorMessage, showSuccessMessage } = useMessage();
 
   function handleGoBack() {
     goBack();
+  }
+
+  async function handleRegisterHistory() {
+    try {
+      setCompletedExercise(true);
+
+      await api.post('/history', { exercise_id: exerciseId });
+
+      showSuccessMessage({ title: 'Parabéns! Exercício registrado com sucesso.' })
+    } catch (error) {
+      const isAppError = error instanceof AppError;
+      const title = isAppError && error.message ? error.message : 'Não foi possível registrar exercício.';
+
+      showErrorMessage({ title });
+    } finally {
+      setCompletedExercise(false);
+    }
   }
 
   useEffect(() => {
@@ -55,13 +73,18 @@ export function Exercise() {
         const title = isAppError && error.message ? error.message : 'Não foi possível carregar os detalhes do exercício.';
 
         showErrorMessage({ title });
+      } finally {
+        setTimeout(() => {
+          setIsLoading(true);
+        }, 1 * 1000);
       }
     }
     
-    if (params?.id) {
-      fetchExercise(params.id)
+    if (exerciseId) {
+      setIsLoading(false);
+      fetchExercise(exerciseId)
     }
-  }, [params]);
+  }, [exerciseId]);
 
   return (
     <VStack flex={1}>
@@ -76,7 +99,7 @@ export function Exercise() {
         </TouchableOpacity>
 
         <HStack alignItems="center" justifyContent="space-between" mt={2}>
-          <Skeleton isLoaded={!!exercise.id} rounded="md">
+          <Skeleton isLoaded={isLoading} rounded="md">
             <Heading
               color="gray.100"
               fontSize="lg"
@@ -102,7 +125,7 @@ export function Exercise() {
         }}
       >
         <VStack mt={8} px={8} space={3}>
-          <Skeleton isLoaded={!!exercise.id} height={80} rounded="md">
+          <Skeleton isLoaded={isLoading} height={80} rounded="md">
             <Box rounded="lg" overflow="hidden">
               <Image
                 source={{ uri: `${api.defaults.baseURL}/exercise/demo/${exercise.demo}` }} 
@@ -114,15 +137,19 @@ export function Exercise() {
             </Box>
           </Skeleton>
 
-          <Box
-            bg="gray.600"
-            px={4}
-            pt={5}
-            pb={4}
-            rounded="lg"
+          <Skeleton
+            height={32}
+            isLoaded={isLoading} 
+            rounded="md"
           >
-            <HStack alignItems="center" justifyContent="space-around" mb={6}>
-              <Skeleton isLoaded={!!exercise.id} rounded="md">
+            <Box
+              bg="gray.600"
+              px={4}
+              pt={5}
+              pb={4}
+              rounded="lg"
+            >
+              <HStack alignItems="center" justifyContent="space-around" mb={6}>
                 <HStack>
                   <SeriesSvg />
                   <Text color="gray.100" ml={2}>
@@ -136,11 +163,15 @@ export function Exercise() {
                     {exercise.repetitions} Repetitions
                   </Text>
                 </HStack>
-              </Skeleton>
-            </HStack>
+              </HStack>
 
-            <Button title="Marcar como realizado" />
-          </Box>
+            <Button 
+              title="Marcar como realizado"
+              isLoading={completedExercise}
+              onPress={handleRegisterHistory}
+            />
+            </Box>
+          </Skeleton>
         </VStack>
       </ScrollView>
     </VStack>

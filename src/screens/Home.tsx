@@ -22,8 +22,8 @@ export function Home() {
 
   const { showErrorMessage } = useMessage();
 
-  function handleNavigateToExercise(id: string) {
-    navigate("exercise", { id });
+  function handleNavigateToExercise(exerciseId: string) {
+    navigate("exercise", { exerciseId });
   }
 
   useFocusEffect(useCallback(() => {
