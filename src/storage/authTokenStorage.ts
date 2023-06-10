@@ -18,3 +18,11 @@ export async function getAuthTokenFromStorage() {
     throw error;
   }
 }
+
+export async function removeTokenFromStorage() { 
+  try {
+    await AsyncStorage.removeItem(AUTH_TOKEN_STORAGE);
+  } catch (error) {
+    throw error;
+  }
+}

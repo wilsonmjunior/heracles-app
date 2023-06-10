@@ -8,7 +8,11 @@ import {
 
 import { UserDTO } from "@dtos/UserDTO";
 import { useMessage } from "@hooks/message.hook";
-import { getAuthTokenFromStorage, saveAuthTokenToStorage } from "@storage/authTokenStorage";
+import {
+  getAuthTokenFromStorage,
+  removeTokenFromStorage,
+  saveAuthTokenToStorage
+} from "@storage/authTokenStorage";
 import {
   getUserFromStorage,
   removeUserFromStorage,
@@ -66,7 +70,9 @@ export function AuthProvider({ children  }:AuthProviderProps) {
       setIsLoadingUserFromStorage(true);
 
       setUser({} as UserDTO);
+      
       await removeUserFromStorage();
+      await removeTokenFromStorage();
     } catch (error) {
       showErrorMessage({ title: "Erro a sair do aplicativo." })
     } finally {
