@@ -1,9 +1,20 @@
-import { ReactNode, createContext, useCallback, useEffect, useState } from "react"
+import {
+  ReactNode,
+  createContext,
+  useCallback,
+  useEffect,
+  useState
+} from "react"
 
 import { UserDTO } from "@dtos/UserDTO";
 import { useMessage } from "@hooks/message.hook";
+import { getAuthTokenFromStorage, saveAuthTokenToStorage } from "@storage/authTokenStorage";
+import {
+  getUserFromStorage,
+  removeUserFromStorage,
+  saveUserToStorage
+} from "@storage/storageUser";
 import { api } from "@services/api";
-import { getUserFromStorage, removeUserFromStorage, saveUserToStorage } from "@storage/storageUser";
 
 type AuthContextDataProps = {
   user: UserDTO;
@@ -24,15 +35,29 @@ export function AuthProvider({ children  }:AuthProviderProps) {
 
   const { showErrorMessage } = useMessage();
 
+  function updateUserAndTokenInStorage({ userUpdate, tokenUpdate }: { userUpdate: UserDTO, tokenUpdate: string }) {
+    api.defaults.headers.common['Authorization'] = `Bearer ${tokenUpdate}`;
+    setUser(userUpdate);
+  }
+
   const signIn = useCallback(async (email: string, password: string) => {
     try {
-      const response = await api.post('sessions', { email, password });
-      if (response.data) {
-        saveUserToStorage(response.data.user)
-        setUser(response.data.user);
+      const { data } = await api.post('sessions', { email, password });
+      if (data.user && data.token) {
+        setIsLoadingUserFromStorage(true);
+
+        await saveUserToStorage(data.user);
+        await saveAuthTokenToStorage(data.token);
+
+        updateUserAndTokenInStorage({ 
+          userUpdate: data.user, 
+          tokenUpdate: data.token,
+        });
       }
     } catch (error) {
       throw error;
+    } finally {
+      setIsLoadingUserFromStorage(false);
     }
   }, []);
 
@@ -52,9 +77,16 @@ export function AuthProvider({ children  }:AuthProviderProps) {
   useEffect(() => {
     async function loadUserData() {
       try {
+        setIsLoadingUserFromStorage(true);
+
         const userLoggedFromStorage = await getUserFromStorage();
-        if (userLoggedFromStorage) {
-          setUser(userLoggedFromStorage);
+        const tokenFromStorage = await getAuthTokenFromStorage();
+
+        if (tokenFromStorage && userLoggedFromStorage) {
+          updateUserAndTokenInStorage({ 
+            userUpdate: userLoggedFromStorage, 
+            tokenUpdate: tokenFromStorage,
+          });
         }
       } catch (error) {
         showErrorMessage({
