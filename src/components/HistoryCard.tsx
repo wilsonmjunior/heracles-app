@@ -1,5 +1,4 @@
 import { HStack, Heading, Text, VStack } from "native-base"
-import React from "react";
 
 type HistoryCardProps = {
 }

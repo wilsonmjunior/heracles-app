@@ -1,12 +1,15 @@
-import { TouchableOpacity, TouchableOpacityProps } from "react-native"
-import { HStack, Heading, Icon, Image, Text, VStack } from "native-base"
-import { Entypo } from "@expo/vector-icons"
+import { TouchableOpacity, TouchableOpacityProps } from "react-native";
+import { HStack, Heading, Icon, Image, Text, VStack } from "native-base";
+import { Entypo } from "@expo/vector-icons";
+
+import { ExerciseDTO } from "@dtos/ExerciseDTO";
+import { api } from "@services/api";
 
 type ExerciseCardProps = TouchableOpacityProps & {
-  name: string;
+  data: ExerciseDTO;
 }
 
-export function ExerciseCard({ name, ...othersProps }: ExerciseCardProps) {
+export function ExerciseCard({ data, ...othersProps }: ExerciseCardProps) {
   return (
     <TouchableOpacity {...othersProps}>
       <HStack
@@ -18,8 +21,8 @@ export function ExerciseCard({ name, ...othersProps }: ExerciseCardProps) {
         space={4}
       >
         <Image
-          source={{ uri: 'https://www.origym.com.br/upload/remada-unilateral-3.png' }} 
-          alt={name}
+          source={{ uri: `${api.defaults.baseURL}/exercise/thumb/${data.thumb}` }} 
+          alt={data.name}
           w={16}
           h={16}
           rounded="md"
@@ -27,9 +30,9 @@ export function ExerciseCard({ name, ...othersProps }: ExerciseCardProps) {
         /> 
 
         <VStack flex={1}>
-          <Heading color="white" fontSize="lg" fontFamily="heading">{name}</Heading>
+          <Heading color="white" fontSize="lg" fontFamily="heading">{data.name}</Heading>
           <Text color="gray.200" fontSize="sm" mt={1} numberOfLines={2}>
-            3 séries x 12 repetições
+            {data.series} séries x {data.repetitions} repetições
           </Text>
         </VStack>
 
