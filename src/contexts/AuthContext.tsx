@@ -17,7 +17,7 @@ import {
   getUserFromStorage,
   removeUserFromStorage,
   saveUserToStorage
-} from "@storage/storageUser";
+} from "@storage/userStorage";
 import { api } from "@services/api";
 
 type AuthContextDataProps = {
@@ -70,7 +70,7 @@ export function AuthProvider({ children  }:AuthProviderProps) {
       setIsLoadingUserFromStorage(true);
 
       setUser({} as UserDTO);
-      
+
       await removeUserFromStorage();
       await removeTokenFromStorage();
     } catch (error) {
