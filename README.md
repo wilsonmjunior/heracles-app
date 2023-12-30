@@ -3,11 +3,11 @@
 ## Features
 
 - **React Native**: A framework for building native mobile apps using JavaScript and React.
+- **Expo**: An open-source platform for making universal native apps for Android, iOS, and the web with JavaScript and React.
 - **React Navigation**: Management of navigation between screens in the app.
 - **Native Base**: UI component library for an attractive and responsive design.
 - **React Hook Form**: Efficient form management with hooks.
 - **Yup Validation**: Simple and powerful form validation.
-- **Expo**
 
 ## Getting Started
 
