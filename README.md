@@ -15,7 +15,10 @@
 
 - Node.js
 - npm or yarn
+- Expo CLI
+- Git (for cloning the repository)
 - Android/iOS emulator or physical device
+- An understanding of React Native and Expo bare workflow
 
 ### Installation
 
