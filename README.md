@@ -8,6 +8,9 @@
 - **Native Base**: UI component library for an attractive and responsive design.
 - **React Hook Form**: Efficient form management with hooks.
 - **Yup Validation**: Simple and powerful form validation.
+- **Fetch API**
+- **Context API**
+- **Autenticação JWT**
 
 ## Getting Started
 
