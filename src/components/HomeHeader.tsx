@@ -8,9 +8,11 @@ import {
 } from "native-base";
 import { MaterialIcons } from "@expo/vector-icons";
 
-import { UserPhoto } from "./UserPhoto";
-import { useAuth } from "@hooks/auth.hook";
 import { UserPhotoDefaultImg } from "@assets/index";
+import { useAuth } from "@hooks/auth.hook";
+import { api } from "@services/api";
+
+import { UserPhoto } from "./UserPhoto";
 
 export function HomeHeader() {
   const { user, signOut } = useAuth();
@@ -26,7 +28,9 @@ export function HomeHeader() {
     >
       <UserPhoto 
         size={16} 
-        source={user.avatar ? { uri: user.avatar } : UserPhotoDefaultImg} 
+        source={user.avatar ? { 
+          uri: `${api.defaults.baseURL}/avatar/${user.avatar}` 
+        } : UserPhotoDefaultImg} 
         alt="Imagem do usuário"
       />
 

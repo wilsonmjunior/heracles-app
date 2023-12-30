@@ -11,24 +11,23 @@ import { TouchableOpacity } from 'react-native'
 import * as ImagePicker from "expo-image-picker"
 import * as FileSystem from "expo-file-system"
 
+import { UserPhotoDefaultImg } from '@assets/index'
 import { Button } from '@components/Button'
 import { Input } from '@components/Input'
 import { ScreenHeader } from '@components/ScreenHeader'
 import { UserPhoto } from '@components/UserPhoto'
 import { useAuth } from '@hooks/auth.hook'
 import { useMessage } from '@hooks/message.hook'
-import { UserPhotoDefaultImg } from '@assets/index'
 import { api } from '@services/api'
 
 const IMAGE_SIZE = 33
 
 export function Profile() {
+  const [photoIsLoaded, setPhotoIsLoaded] = useState(true)
+  
   const { showErrorMessage, showSuccessMessage } = useMessage()
 
-  const [photoIsLoaded, setPhotoIsLoaded] = useState(true)
-  const [userPhoto, setUserPhoto] = useState("")
-
-  const { user } = useAuth()
+  const { user, updateUser } = useAuth()
 
   async function handleChangeUserPhoto() {
     try {
@@ -61,25 +60,24 @@ export function Profile() {
           type: `${photoSelected.assets[0].type}/${fileExtension}`
         } as any
 
-        console.log('photoFile:: ', api.defaults.headers.common['Authorization'])
         const userPhotoUploadForm = new FormData()
         userPhotoUploadForm.append('avatar', photoFile)
 
-
-        await api.patch('/users/avatar', userPhotoUploadForm, {
+        const avatarUpdatedResponse = await api.patch('/users/avatar', userPhotoUploadForm, {
           headers: { 
             'Content-Type': 'multipart/form-data',
           }
         })
 
-        setUserPhoto(photoSelected.assets[0].uri)
+        const userUpdate = user
+        userUpdate.avatar = avatarUpdatedResponse.data.avatar
+        updateUser(userUpdate)
 
         showSuccessMessage({
           title: 'Foto de perfil atualizada.'
         })
       }
     } catch (error) {
-      console.log('image error: ', error)
       showErrorMessage({
         title: "Erro ao carregar a imagem.",
       })
@@ -108,7 +106,9 @@ export function Profile() {
           >
             <UserPhoto 
               size={IMAGE_SIZE} 
-              source={userPhoto !== "" ? { uri: userPhoto } : UserPhotoDefaultImg} 
+              source={user.avatar ? { 
+                uri: `${api.defaults.baseURL}/avatar/${user.avatar}` 
+              } : UserPhotoDefaultImg} 
               alt="Foto do usuário"
               mb={3}
             />
