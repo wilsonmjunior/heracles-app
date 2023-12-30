@@ -50,8 +50,9 @@ export function SignIn() {
       const title = isAppError ? error.message : "Não foi possível logar. Tente novamente mais tarde.";
 
       showErrorMessage({ title });
+    } finally {
       setIsLoading(false);
-    } 
+    }
   }
 
   return (
