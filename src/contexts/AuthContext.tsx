@@ -20,11 +20,14 @@ import {
 } from "@storage/userStorage";
 import { api } from "@services/api";
 
+type UserTokenUpdated = { userUpdate: UserDTO, tokenUpdate?: string }
+
 type AuthContextDataProps = {
-  user: UserDTO;
-  isLoadingUserFromStorage: boolean;
+  user: UserDTO
+  isLoadingUserFromStorage: boolean
   signIn(email: string, password: string): Promise<void>
-  signOut(): void;
+  signOut(): void
+  updateUser(value: UserDTO): void
 }
 
 type AuthProviderProps = { 
@@ -39,8 +42,12 @@ export function AuthProvider({ children  }:AuthProviderProps) {
 
   const { showErrorMessage } = useMessage();
 
-  function updateUserAndTokenInStorage({ userUpdate, tokenUpdate }: { userUpdate: UserDTO, tokenUpdate: string }) {
+  function updateUserAndTokenInStorage({ userUpdate, tokenUpdate }: UserTokenUpdated) {
     api.defaults.headers.common['Authorization'] = `Bearer ${tokenUpdate}`;
+    setUser(userUpdate);
+  }
+
+  function updateUser(userUpdate: UserDTO) {
     setUser(userUpdate);
   }
 
@@ -113,6 +120,7 @@ export function AuthProvider({ children  }:AuthProviderProps) {
         isLoadingUserFromStorage,
         signIn,
         signOut,
+        updateUser,
       }}
     >
       {children}

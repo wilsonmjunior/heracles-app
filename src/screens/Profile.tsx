@@ -11,20 +11,23 @@ import { TouchableOpacity } from 'react-native'
 import * as ImagePicker from "expo-image-picker"
 import * as FileSystem from "expo-file-system"
 
+import { UserPhotoDefaultImg } from '@assets/index'
 import { Button } from '@components/Button'
 import { Input } from '@components/Input'
 import { ScreenHeader } from '@components/ScreenHeader'
 import { UserPhoto } from '@components/UserPhoto'
+import { useAuth } from '@hooks/auth.hook'
 import { useMessage } from '@hooks/message.hook'
-import { UserPhotoDefaultImg } from '@assets/index'
+import { api } from '@services/api'
 
 const IMAGE_SIZE = 33
 
 export function Profile() {
-  const { showErrorMessage } = useMessage()
-
   const [photoIsLoaded, setPhotoIsLoaded] = useState(true)
-  const [userPhoto, setUserPhoto] = useState("")
+  
+  const { showErrorMessage, showSuccessMessage } = useMessage()
+
+  const { user, updateUser } = useAuth()
 
   async function handleChangeUserPhoto() {
     try {
@@ -36,19 +39,43 @@ export function Profile() {
         aspect: [4, 4],
         allowsEditing: true,
       })
-  
+      
       if (photoSelected.canceled) {
         return
       }
-
-      if (photoSelected.assets[0].uri) {
+      
+      if (photoSelected.assets.length && photoSelected.assets[0].uri) {
         const photoInfo = await FileSystem.getInfoAsync(photoSelected.assets[0].uri)
         if (photoInfo.exists && (photoInfo.size / 1024 / 1024) > 2) {
           return showErrorMessage({ 
             title: "Essa imagem é muito grande. Escolha uma de até 2MB" 
           })
         }
-        setUserPhoto(photoSelected.assets[0].uri)
+
+        const fileExtension = photoSelected.assets[0].uri.split('.').pop()
+
+        const photoFile = {
+          name: (`${user.name}.${fileExtension}`).toLocaleLowerCase(),
+          uri: photoSelected.assets[0].uri,
+          type: `${photoSelected.assets[0].type}/${fileExtension}`
+        } as any
+
+        const userPhotoUploadForm = new FormData()
+        userPhotoUploadForm.append('avatar', photoFile)
+
+        const avatarUpdatedResponse = await api.patch('/users/avatar', userPhotoUploadForm, {
+          headers: { 
+            'Content-Type': 'multipart/form-data',
+          }
+        })
+
+        const userUpdate = user
+        userUpdate.avatar = avatarUpdatedResponse.data.avatar
+        updateUser(userUpdate)
+
+        showSuccessMessage({
+          title: 'Foto de perfil atualizada.'
+        })
       }
     } catch (error) {
       showErrorMessage({
@@ -79,7 +106,9 @@ export function Profile() {
           >
             <UserPhoto 
               size={IMAGE_SIZE} 
-              source={userPhoto !== "" ? { uri: userPhoto } : UserPhotoDefaultImg} 
+              source={user.avatar ? { 
+                uri: `${api.defaults.baseURL}/avatar/${user.avatar}` 
+              } : UserPhotoDefaultImg} 
               alt="Foto do usuário"
               mb={3}
             />
