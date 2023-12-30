@@ -1,4 +1,28 @@
-## Heracles Gym 
+# Heracles Gym
+
+## Features
+
+- **React Native**: A framework for building native mobile apps using JavaScript and React.
+- **React Navigation**: Management of navigation between screens in the app.
+- **Native Base**: UI component library for an attractive and responsive design.
+- **React Hook Form**: Efficient form management with hooks.
+- **Yup Validation**: Simple and powerful form validation.
+- **Expo**
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js
+- npm or yarn
+- Android/iOS emulator or physical device
+
+### Installation
+
+1. Clone the repository:
+  ```bash
+  git clone https://github.com/your-username/heraclesgym.git
+  ```
 
 <img 
   src="https://github.com/wilsonmjunior/heracles-app/assets/11083214/3c6018db-54c6-4092-887e-21d226227230" 
