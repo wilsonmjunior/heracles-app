@@ -27,8 +27,12 @@
 
 1. Clone the repository:
   ```bash
-  git clone https://github.com/your-username/heraclesgym.git
+  git clone https://github.com/your-username/heracles-app.git
   ```
+2. Clone API for using
+   ```
+  git clone https://github.com/your-username/heracles-api.git
+   ```
 
 <img 
   src="https://github.com/wilsonmjunior/heracles-app/assets/11083214/3c6018db-54c6-4092-887e-21d226227230" 
